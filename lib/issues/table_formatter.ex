@@ -2,7 +2,7 @@ defmodule Issues.TableFormatter do
 
   def present(issues, headers) do
     widths = Enum.map(headers, &(calculate_column_width(issues, &1)))
-    rows = Enum.map(issues, &(get_rows(&1, headers)))
+    rows = Enum.map(issues, &(get_columns(&1, headers)))
 
     present_row(headers, widths)
     present_separation(widths)
@@ -11,8 +11,9 @@ defmodule Issues.TableFormatter do
 
   def present_row(row, widths) do
     Enum.zip(row, widths)
-    |> Enum.map(fn({value, length}) -> String.ljust(value, length) end)
+    |> Enum.map(fn({value, length}) -> String.ljust(to_string(value), length) end)
     |> Enum.join(" | ")
+    |> String.strip
     |> IO.puts
   end
 
@@ -23,14 +24,14 @@ defmodule Issues.TableFormatter do
     |> IO.puts
   end
 
-  def get_rows(issue, headers) do
+  def get_columns(issue, headers) do
     Enum.map(headers, &(to_string(issue[&1])))
   end
 
   def calculate_column_width(issues, header) do
     issues
     |> Enum.map(&(calculate_item_width(&1, header)))
-    |> Enum.concat([String.length(header)])
+    |> Enum.concat([String.length(to_string(header))])
     |> Enum.max()
   end
 
