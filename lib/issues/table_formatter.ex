@@ -18,13 +18,13 @@ defmodule Issues.TableFormatter do
 
   def present_separation(widths) do
     widths
-    |> Enum.map(&(String.ljust("-", &1, ?-)))
+    |> Enum.map(&(List.duplicate("-", &1)))
     |> Enum.join("-+-")
     |> IO.puts
   end
 
   def get_rows(issue, headers) do
-    Enum.map(headers, &("#{issue[&1]}"))
+    Enum.map(headers, &(to_string(issue[&1])))
   end
 
   def calculate_column_width(issues, header) do
@@ -35,6 +35,6 @@ defmodule Issues.TableFormatter do
   end
 
   def calculate_item_width(issue, header) do
-    "#{issue[header]}" |> String.length
+    to_string(issue[header]) |> String.length
   end
 end
